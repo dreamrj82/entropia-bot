@@ -22,10 +22,13 @@ const CHANNELS = {
 };
 
 /* ===========================
-   BOT READY
+   BOT READY FLAG
 =========================== */
 
+let botReady = false;
+
 client.once('ready', () => {
+    botReady = true;
     console.log(`🤖 Logged in as ${client.user.tag}`);
 });
 
@@ -53,11 +56,23 @@ client.on('guildMemberAdd', async (member) => {
 });
 
 /* ===========================
+   HEALTH CHECK (FIXES RAILWAY ERROR)
+=========================== */
+
+app.get('/', (req, res) => {
+    res.send('Bot is running');
+});
+
+/* ===========================
    API ENDPOINT
 =========================== */
 
 app.post('/post-content', async (req, res) => {
     try {
+        if (!botReady) {
+            return res.status(503).json({ error: "Bot not ready yet" });
+        }
+
         const { type, title, url } = req.body;
 
         const channelId = CHANNELS[type];
@@ -83,7 +98,7 @@ app.post('/post-content', async (req, res) => {
 });
 
 /* ===========================
-   START EVERYTHING
+   START SERVER
 =========================== */
 
 const PORT = process.env.PORT || 3000;
@@ -91,5 +106,9 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🌐 API running on port ${PORT}`);
 });
+
+/* ===========================
+   LOGIN LAST
+=========================== */
 
 client.login(process.env.DISCORD_TOKEN);
