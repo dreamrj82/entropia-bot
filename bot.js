@@ -22,6 +22,12 @@ const CHANNELS = {
 };
 
 /* ===========================
+   LOG CHANNEL
+=========================== */
+
+const LOG_CHANNEL_ID = "1500978013565751359";
+
+/* ===========================
    BOT READY FLAG
 =========================== */
 
@@ -31,6 +37,21 @@ client.once('ready', () => {
     botReady = true;
     console.log(`🤖 Logged in as ${client.user.tag}`);
 });
+
+/* ===========================
+   LOG HELPER
+=========================== */
+
+function logToDiscord(message) {
+    try {
+        const channel = client.channels.cache.get(LOG_CHANNEL_ID);
+        if (channel) {
+            channel.send(message);
+        }
+    } catch (err) {
+        console.error("❌ Log send failed:", err);
+    }
+}
 
 /* ===========================
    AUTO ROLE ON JOIN
@@ -44,19 +65,23 @@ client.on('guildMemberAdd', async (member) => {
 
         if (!role) {
             console.log("❌ Colonist role not found");
+            logToDiscord("❌ Colonist role not found");
             return;
         }
 
         await member.roles.add(role);
+
         console.log(`✅ Assigned Colonist to ${member.user.tag}`);
+        logToDiscord(`🟢 ${member.user.tag} joined and was assigned Colonist`);
 
     } catch (err) {
         console.error("❌ Role assignment failed:", err);
+        logToDiscord(`❌ Role assignment failed for ${member.user.tag}`);
     }
 });
 
 /* ===========================
-   HEALTH CHECK (FIXES RAILWAY ERROR)
+   HEALTH CHECK
 =========================== */
 
 app.get('/', (req, res) => {
@@ -89,10 +114,13 @@ app.post('/post-content', async (req, res) => {
 
         await channel.send(`📢 **New ${type} added!**\n\n**${title}**\n${url}`);
 
+        logToDiscord(`📢 New ${type} posted: ${title}`);
+
         res.json({ success: true });
 
     } catch (err) {
         console.error("❌ Post error:", err);
+        logToDiscord(`❌ Post error: ${err.message}`);
         res.status(500).json({ error: "Failed to post" });
     }
 });
@@ -100,6 +128,7 @@ app.post('/post-content', async (req, res) => {
 /* ===========================
    START SERVER
 =========================== */
+
 const PORT = process.env.PORT;
 
 app.listen(PORT, '0.0.0.0', () => {
