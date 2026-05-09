@@ -19,7 +19,8 @@ const CHANNELS = {
     story: "1500979145965043815",
     image: "1500979219335872592",
     video: "1500979380938346596",
-	vu: "1501086859022045194" // announcement channel
+    vu: "1501086859022045194", // announcement channel
+    museum_update: "1501086990097977506"
 };
 
 /* ===========================
@@ -46,9 +47,11 @@ client.once('ready', () => {
 function logToDiscord(message) {
     try {
         const channel = client.channels.cache.get(LOG_CHANNEL_ID);
+
         if (channel) {
             channel.send(message);
         }
+
     } catch (err) {
         console.error("❌ Log send failed:", err);
     }
@@ -59,7 +62,9 @@ function logToDiscord(message) {
 =========================== */
 
 client.on('guildMemberAdd', async (member) => {
+
     try {
+
         const roleName = "Colonist";
 
         const role = member.guild.roles.cache.find(r => r.name === roleName);
@@ -76,9 +81,12 @@ client.on('guildMemberAdd', async (member) => {
         logToDiscord(`🟢 ${member.user.tag} joined and was assigned Colonist`);
 
     } catch (err) {
+
         console.error("❌ Role assignment failed:", err);
         logToDiscord(`❌ Role assignment failed for ${member.user.tag}`);
+
     }
+
 });
 
 /* ===========================
@@ -94,9 +102,13 @@ app.get('/', (req, res) => {
 =========================== */
 
 app.post('/post-content', async (req, res) => {
+
     try {
+
         if (!botReady) {
-            return res.status(503).json({ error: "Bot not ready yet" });
+            return res.status(503).json({
+                error: "Bot not ready yet"
+            });
         }
 
         const { type, title, url } = req.body;
@@ -104,26 +116,67 @@ app.post('/post-content', async (req, res) => {
         const channelId = CHANNELS[type];
 
         if (!channelId) {
-            return res.status(400).json({ error: "Invalid type" });
+            return res.status(400).json({
+                error: "Invalid type"
+            });
         }
 
         const channel = await client.channels.fetch(channelId);
 
         if (!channel) {
-            return res.status(404).json({ error: "Channel not found" });
+            return res.status(404).json({
+                error: "Channel not found"
+            });
         }
 
-        await channel.send(`📢 **New ${type} added!**\n\n**${title}**\n${url}`);
+        let message = '';
+
+        switch(type) {
+
+            case 'story':
+                message = `📖 **New Story Added!**\n\n**${title}**\n${url}`;
+                break;
+
+            case 'image':
+                message = `🖼️ **New Gallery Image Added!**\n\n**${title}**\n${url}`;
+                break;
+
+            case 'video':
+                message = `🎬 **New Video Added!**\n\n**${title}**\n${url}`;
+                break;
+
+            case 'vu':
+                message = `🚀 **New Version Update Added!**\n\n**${title}**\n${url}`;
+                break;
+
+            case 'museum_update':
+                message = `🏛️ **New Museum Update Posted!**\n\n**${title}**\n${url}`;
+                break;
+
+            default:
+                message = `📢 **New Content Added!**\n\n**${title}**\n${url}`;
+        }
+
+        await channel.send(message);
 
         logToDiscord(`📢 New ${type} posted: ${title}`);
 
-        res.json({ success: true });
+        res.json({
+            success: true
+        });
 
     } catch (err) {
+
         console.error("❌ Post error:", err);
+
         logToDiscord(`❌ Post error: ${err.message}`);
-        res.status(500).json({ error: "Failed to post" });
+
+        res.status(500).json({
+            error: "Failed to post"
+        });
+
     }
+
 });
 
 /* ===========================
