@@ -20,7 +20,8 @@ const CHANNELS = {
     image: "1500979219335872592",
     video: "1500979380938346596",
     vu: "1501086859022045194", // announcement channel
-    museum_update: "1501086990097977506"
+    museum_update: "1501086990097977506",
+    mindark_news: "1501086859022045194" // announcement channel
 };
 
 /* ===========================
@@ -151,6 +152,10 @@ app.post('/post-content', async (req, res) => {
 
             case 'museum_update':
                 message = `🏛️ **New Museum Update Posted!**\n\n**${title}**\n${url}`;
+                break;
+
+            case 'mindark_news':
+                message = `🧠 **New MindArk News Posted!**\n\n**${title}**\n${url}`;
                 break;
 
             default:
