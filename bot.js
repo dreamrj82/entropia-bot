@@ -23,7 +23,8 @@ const CHANNELS = {
     museum_update: "1501086990097977506", // museum_updates channel
     mindark_news: "1501086859022045194", // announcement channel
 	eu_news: "1501086859022045194", // announcement channel
-	curator_statements: "1501086990097977506" // museum_updates channel
+	curator_statements: "1501086990097977506", // museum_updates channel
+	events_and_giveaways: "1502102038161653810" // events_and_giveaways channel
 };
 
 /* ===========================
@@ -162,6 +163,10 @@ app.post('/post-content', async (req, res) => {
 
 			case 'eu_news':
 				message = `📰 **New EU News Posted!**\n\n**${title}**\n${url}`;
+				break;
+
+			case 'event':
+				message = `📰 **New Event Posted!**\n\n**${title}**\n${url}`;
 				break;
 				
             case 'curator_statements':
