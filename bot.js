@@ -25,6 +25,13 @@ const CHANNELS = {
 	eu_news: "1501086859022045194", // announcement channel
 	curator_statements: "1501086990097977506", // museum_updates channel
 	event: "1502102038161653810" // events_and_giveaways channel
+	// entropia-events bits here
+	platform_update: "1510335806680596693",  // entropia-events channel
+	event_announcement: "1510335806680596693", // entropia-events channel
+	community_news: "1510335806680596693", // entropia-events channel
+	app_update: "1510335806680596693", // entropia-events channel
+	competition_result: "1510335806680596693", // entropia-events channel
+	maintenance: "1510335806680596693" // entropia-events channel
 };
 
 /* ===========================
@@ -167,6 +174,30 @@ app.post('/post-content', async (req, res) => {
 
 			case 'event':
 				message = `📰 **New Event Posted!**\n\n**${title}**\n${url}`;
+				break;
+
+			case 'platform_update':
+				message = `🚀 **New Platform Update Posted!**\n\n**${title}**\n${url}`;
+				break;
+
+			case 'event_announcement':
+				message = `📅 **New Event Announcement Posted!**\n\n**${title}**\n${url}`;
+				break;
+
+			case 'community_news':
+				message = `👥 **New Community News Posted!**\n\n**${title}**\n${url}`;
+				break;
+
+			case 'app_update':
+				message = `💻 **New App Update Posted!**\n\n**${title}**\n${url}`;
+				break;
+
+			case 'competition_result':
+				message = `🏆 **New Competition Result Posted!**\n\n**${title}**\n${url}`;
+				break;
+
+			case 'maintenance':
+				message = `🛠️ **New Maintenance Notice Posted!**\n\n**${title}**\n${url}`;
 				break;
 				
             case 'curator_statements':
