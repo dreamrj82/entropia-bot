@@ -24,7 +24,7 @@ const CHANNELS = {
     mindark_news: "1501086859022045194", // announcement channel
 	eu_news: "1501086859022045194", // announcement channel
 	curator_statements: "1501086990097977506", // museum_updates channel
-	event: "1502102038161653810" // events_and_giveaways channel
+	event: "1502102038161653810", // events_and_giveaways channel
 	// entropia-events bits here
 	platform_update: "1510335806680596693",  // entropia-events channel
 	event_announcement: "1510335806680596693", // entropia-events channel
